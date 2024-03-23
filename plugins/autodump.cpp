@@ -79,6 +79,7 @@ static command_result autodump_main(color_ostream &out, vector <string> & parame
     bool need_visible = false;
     bool need_hidden = false;
     bool need_forbidden = false;
+    bool need_unforbidden = false;
     for (size_t i = 0; i < parameters.size(); i++)
     {
         string & p = parameters[i];
@@ -92,6 +93,8 @@ static command_result autodump_main(color_ostream &out, vector <string> & parame
             need_hidden = true;
         else if (p == "forbidden")
             need_forbidden = true;
+        else if (p == "unforbidden")
+            need_unforbidden = true;
         else
             return CR_WRONG_USAGE;
     }
@@ -99,6 +102,11 @@ static command_result autodump_main(color_ostream &out, vector <string> & parame
     if (need_visible && need_hidden)
     {
         out.printerr("An item can't be both hidden and visible.\n");
+        return CR_WRONG_USAGE;
+    }
+
+    if (need_forbidden && need_unforbidden) {
+        out.printerr("An item can't be both forbidden an unforbidden.\n");
         return CR_WRONG_USAGE;
     }
 
@@ -159,7 +167,7 @@ static command_result autodump_main(color_ostream &out, vector <string> & parame
             continue;
         if (need_forbidden && !itm->flags.bits.forbid)
             continue;
-        if (!need_forbidden && itm->flags.bits.forbid)
+        if (need_unforbidden && itm->flags.bits.forbid)
             continue;
 
         if (!destroy) // move to cursor
