@@ -43,6 +43,8 @@ Options
     Only process hidden items.
 ``forbidden``
     Only process forbidden items (default: only unforbidden).
+``any-forbidden``
+    Process items regardless of forbidden-ness.
 
 Examples
 --------
